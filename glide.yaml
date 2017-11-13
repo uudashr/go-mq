@@ -1,0 +1,10 @@
+package: github.com/uudashr/go-mq
+import:
+- package: github.com/nsqio/go-nsq
+  version: ^1.0.7
+- package: cloud.google.com/go
+  version: ^0.16.0
+  subpackages:
+  - pubsub
+- package: github.com/streadway/amqp
+- package: gopkg.in/mattes/go-expand-tilde.v1
