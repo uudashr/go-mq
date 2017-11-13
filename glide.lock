@@ -1,5 +1,5 @@
 hash: 7041828e487e88c1fa7a04985a8dd4c6fc40e10388605f38a75d1c130191bea6
-updated: 2017-11-02T14:15:52.612503+07:00
+updated: 2017-11-13T16:16:37.520291+07:00
 imports:
 - name: cloud.google.com/go
   version: 2d3a6656c17a60b0815b7e06ab0be04eacb6e613
@@ -26,7 +26,7 @@ imports:
 - name: github.com/nsqio/go-nsq
   version: eee57a3ac4174c55924125bb15eeeda8cffb6e6f
 - name: github.com/streadway/amqp
-  version: 7db842394ca79f338f781d47bc59115f44adb20b
+  version: ff791c2d22d3f1588b4e2cc71a9fba5e1da90654
 - name: golang.org/x/net
   version: ea0da6f35caf3ff91581c800469e22eef75076f4
   subpackages:
