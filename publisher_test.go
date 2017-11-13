@@ -1,11 +1,13 @@
 package mq_test
 
-import "github.com/uudashr/go-mq"
+import mq "github.com/uudashr/go-mq"
 
 func ExamplePublisher() {
 	const topic = "greetings"
 
 	var pub mq.Publisher
+	// ...
+
 	err := pub.Publish(topic, []byte("Hello World"))
 	if err != nil {
 		// TODO: handle error

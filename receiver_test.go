@@ -6,6 +6,8 @@ import (
 
 func ExampleReceiver() {
 	var recv mq.Receiver
+	// ...
+
 	handler := mq.HandlerFunc(func(msg mq.Message) {
 		// TODO: handler message
 		_ = msg.Ack()
