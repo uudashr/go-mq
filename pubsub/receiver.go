@@ -76,7 +76,7 @@ func (r *Receiver) Stop() error {
 }
 
 // NewReceiver construct new Receiver.
-func NewReceiver(projectID, topicID, subscriptionID string, opts ...option.ClientOption) (*Receiver, error) {
+func NewReceiver(projectID, subscriptionID string, opts ...option.ClientOption) (*Receiver, error) {
 	recvCtx, stopRecv := context.WithCancel(context.Background())
 	return &Receiver{
 		projectID:      projectID,

@@ -89,7 +89,7 @@ func TestReceive(t *testing.T) {
 
 	topic.Stop()
 
-	recv, err := pubsub.NewReceiver(*flagProjectID, *flagTopicID, *flagSubscriptinID, option.WithCredentialsFile(credsFile))
+	recv, err := pubsub.NewReceiver(*flagProjectID, *flagSubscriptinID, option.WithCredentialsFile(credsFile))
 	if err != nil {
 		t.Fatal("err:", err)
 	}
