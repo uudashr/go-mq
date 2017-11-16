@@ -51,8 +51,8 @@ func (p *Publisher) Stop() error {
 }
 
 // NewPublisher constructs new Publisher.
-func NewPublisher(projectID string, opts ...option.ClientOption) (*Publisher, error) {
-	client, err := pubsub.NewClient(context.Background(), projectID, opts...)
+func NewPublisher(ctx context.Context, projectID string, opts ...option.ClientOption) (*Publisher, error) {
+	client, err := pubsub.NewClient(ctx, projectID, opts...)
 	if err != nil {
 		return nil, err
 	}
