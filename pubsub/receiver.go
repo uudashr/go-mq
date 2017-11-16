@@ -45,7 +45,7 @@ func (r *Receiver) Listen(h mq.Handler) (retErr error) {
 	}
 
 	defer func() {
-		if err := client.Close(); err != nil && retErr != nil {
+		if err = client.Close(); err != nil && retErr != nil {
 			retErr = err
 		}
 	}()
