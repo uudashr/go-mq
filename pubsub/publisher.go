@@ -32,7 +32,7 @@ func (p *Publisher) topic(id string) *pubsub.Topic {
 	defer p.mu.Unlock()
 
 	topic := p.topics[id]
-	if p == nil {
+	if topic == nil {
 		topic = p.client.Topic(id)
 		p.topics[id] = topic
 	}
