@@ -30,7 +30,6 @@ func TestReceive(t *testing.T) {
 		t.Fatal("err:", err)
 	}
 
-	// Publisher
 	client, err := gpubsub.NewClient(context.Background(), *flagProjectID, option.WithCredentialsFile(credsFile))
 	if err != nil {
 		t.Fatal("err:", err)
@@ -42,17 +41,9 @@ func TestReceive(t *testing.T) {
 		}
 	}()
 
-	topic := client.Topic(*flagTopicID)
-	exists, err := topic.Exists(context.Background())
+	topic, err := ensureTopic(client, *flagTopicID)
 	if err != nil {
 		t.Fatal("err:", err)
-	}
-
-	if !exists {
-		topic, err = client.CreateTopic(context.Background(), *flagTopicID)
-		if err != nil {
-			t.Fatal("err:", err)
-		}
 	}
 
 	defer func() {
@@ -61,17 +52,9 @@ func TestReceive(t *testing.T) {
 		}
 	}()
 
-	subs := client.Subscription(*flagSubscriptinID)
-	exists, err = subs.Exists(context.Background())
+	subs, err := ensureSubscription(client, topic, *flagSubscriptinID)
 	if err != nil {
 		t.Fatal("err:", err)
-	}
-
-	if !exists {
-		subs, err = client.CreateSubscription(context.Background(), *flagSubscriptinID, gpubsub.SubscriptionConfig{Topic: topic})
-		if err != nil {
-			t.Fatal("err:", err)
-		}
 	}
 
 	defer func() {
@@ -80,6 +63,7 @@ func TestReceive(t *testing.T) {
 		}
 	}()
 
+	// Publish
 	testMessage := fmt.Sprintf("Hello World [%s]", time.Now().Format(time.RFC3339Nano))
 	pubRes := topic.Publish(context.Background(), &gpubsub.Message{Data: []byte(testMessage)})
 	_, err = pubRes.Get(context.Background())
@@ -89,6 +73,7 @@ func TestReceive(t *testing.T) {
 
 	topic.Stop()
 
+	// Receiver
 	recv, err := pubsub.NewReceiver(*flagProjectID, *flagSubscriptinID, option.WithCredentialsFile(credsFile))
 	if err != nil {
 		t.Fatal("err:", err)
