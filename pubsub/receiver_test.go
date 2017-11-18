@@ -79,6 +79,8 @@ func TestReceive(t *testing.T) {
 		t.Fatal("err:", err)
 	}
 
+	defer recv.Stop()
+
 	msgCh := make(chan string)
 	errCh := make(chan error, 1)
 	go func() {
