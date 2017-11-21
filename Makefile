@@ -1,4 +1,3 @@
-SOURCES := $(shell find . -name '*.go' -type f -not -path './vendor/*'  -not -path '*/mocks/*')
 PACKAGES := $(go list ./... | grep -v /vendor/)
 
 NSQ_NSQD_ADDR ?= 127.0.0.1:4150
