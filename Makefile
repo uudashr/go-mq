@@ -1,4 +1,5 @@
 SOURCES := $(shell find . -name '*.go' -type f -not -path './vendor/*'  -not -path '*/mocks/*')
+PACKAGES := $(go list ./... | grep -v /vendor/)
 
 NSQ_NSQD_ADDR ?= 127.0.0.1:4150
 NSQ_LOOKUPD_ADDR ?= 127.0.0.1:4161
@@ -8,18 +9,22 @@ NSQ_CHANNEL ?= public
 # Dependencies Management
 .PHONY: vendor-prepare
 vendor-prepare:
-	@echo "Installing glide"
-	@curl https://glide.sh/get | sh
+	@echo "Installing dep"
+	@go get -u -v github.com/golang/dep/cmd/dep
 
-glide.lock: glide.yaml
-	@glide update
+Gopkg.lock: Gopkg.toml
+	@dep ensure -update
 
 .PHONY: vendor-update
 vendor-update:
-	@glide update
+	@dep ensure -update
 
-vendor: glide.lock
-	@glide install
+vendor: Gopkg.lock
+	@dep ensure
+
+.PHONY: vendor-optimize
+vendor-optimize: vendor
+	@dep prune
 
 .PHONY: clean-vendor
 clean-vendor:
@@ -28,7 +33,7 @@ clean-vendor:
 # Testing
 .PHONY: test
 test: vendor
-	@go test -short $$(glide novendor)
+	@go test -short $(PACKAGES)
 
 .PHONY: test-nsq
 test-nsq: vendor
