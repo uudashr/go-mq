@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"sync/atomic"
+	"time"
 
 	"cloud.google.com/go/pubsub"
 
@@ -23,6 +24,7 @@ const (
 type Receiver struct {
 	projectID      string
 	subscriptionID string
+	connectTimeout time.Duration
 	opts           []option.ClientOption
 
 	recvCtx  context.Context
@@ -39,7 +41,7 @@ func (r *Receiver) Listen(h mq.Handler) (retErr error) {
 
 	defer atomic.StoreInt32(&r.state, stateStopped)
 
-	client, err := pubsub.NewClient(context.Background(), r.projectID, r.opts...)
+	client, err := r.newClient()
 	if err != nil {
 		return err
 	}
@@ -65,6 +67,12 @@ func (r *Receiver) Listen(h mq.Handler) (retErr error) {
 	return nil
 }
 
+func (r *Receiver) newClient() (*pubsub.Client, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), r.connectTimeout)
+	defer cancel()
+	return pubsub.NewClient(ctx, r.projectID, r.opts...)
+}
+
 // Stop the receiver.
 func (r *Receiver) Stop() error {
 	if !atomic.CompareAndSwapInt32(&r.state, stateListening, stateStopping) {
@@ -76,11 +84,12 @@ func (r *Receiver) Stop() error {
 }
 
 // NewReceiver construct new Receiver.
-func NewReceiver(projectID, subscriptionID string, opts ...option.ClientOption) (*Receiver, error) {
+func NewReceiver(projectID, subscriptionID string, connectTimeout time.Duration, opts ...option.ClientOption) (*Receiver, error) {
 	recvCtx, stopRecv := context.WithCancel(context.Background())
 	return &Receiver{
 		projectID:      projectID,
 		subscriptionID: subscriptionID,
+		connectTimeout: connectTimeout,
 		opts:           opts,
 		recvCtx:        recvCtx,
 		stopRecv:       stopRecv,
